@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/lib/layui-v2.5.5/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+                <div class="layui-form-item">
+                <label class="layui-form-label ">分类名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name"
+                           
+                           placeholder="请输入分类名" value="" class="layui-input"/>
+                </div>
+            </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="save-btn">立即提交</button>
+        </div>
+    </div>
+</div>
+<script th:src="@{/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'laydate', 'upload'], function () {
+        let form = layui.form,
+            $ = layui.$,
+            laydate = layui.laydate,
+            upload = layui.upload
+
+        //监听提交
+        form.on('submit(save-btn)', function (data) {
+            $.ajax({
+                url: '/type/add',
+                type: 'post',
+                data: JSON.stringify(data.field),
+                contentType: 'application/json',
+                success: function () {
+                    let iframeIndex = parent.layer.getFrameIndex(window.name)
+                    parent.layer.close(iframeIndex)
+                }
+            })
+            return false
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/lib/layui-v2.5.5/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+                <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-block">
+                    <input type="text" th:value="${user.username}"
+                           class="layui-input" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="password"
+                           lay-verify="required" lay-reqtext="密码不能为空"
+                           placeholder="请输入密码" value="" class="layui-input" readonly>
+                </div>
+            </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色</label>
+                    <div class="layui-input-block">
+                        <select name="role" disabled>
+                                <option value="user"
+                                        th:selected="${user.role == 'user'}">用户</option>
+                        </select>
+                    </div>
+                </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">身高</label>
+                <div class="layui-input-block">
+                    <input type="text" th:value="${user.height}"
+                           class="layui-input" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">体重</label>
+                <div class="layui-input-block">
+                    <input type="text" th:value="${user.weight}"
+                           class="layui-input" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">胸围</label>
+                <div class="layui-input-block">
+                    <input type="text" th:value="${user.bra}"
+                           class="layui-input" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">腰围</label>
+                <div class="layui-input-block">
+                    <input type="text" th:value="${user.yao}"
+                           class="layui-input" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">臀围</label>
+                <div class="layui-input-block">
+                    <input type="text" th:value="${user.ass}"
+                           class="layui-input" readonly>
+                </div>
+            </div>
+</div>
+<script th:src="@{/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script th:inline="javascript">
+    layui.use(['laydate', 'form'], function () {
+        let laydate = layui.laydate,
+            form = layui.form,
+            $ = layui.$
+    })
+</script>
+</body>
+</html>

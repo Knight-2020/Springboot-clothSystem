@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/lib/layui-v2.5.5/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+                <div class="layui-form-item">
+                <label class="layui-form-label">名称</label>
+                <div class="layui-input-block">
+                    <input type="text" th:value="${cloth.name}"
+                           class="layui-input" readonly>
+                </div>
+            </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label ">分类</label>
+                    <div class="layui-input-block">
+                        <select name="typeId" disabled
+                                >
+                            <option value="">请选择分类</option>
+                        </select>
+                    </div>
+                </div>
+</div>
+<script th:src="@{/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script th:inline="javascript">
+    layui.use(['laydate', 'form'], function () {
+        let laydate = layui.laydate,
+            form = layui.form,
+            $ = layui.$
+        $.ajax({
+            type: 'post',
+            url: '/type/list',
+            data: JSON.stringify({}),
+            contentType: 'application/json',
+            success: function (data) {
+                data.data.forEach(it => {
+                    if (it.id === [[${cloth.typeId}]]) {
+                        $('select[name=typeId]').append(`<option value="${it.id}" selected>${it.name}</option>`)
+                    } else {
+                        $('select[name=typeId]').append(`<option value="${it.id}">${it.name}</option>`)
+                    }
+                })
+                form.render('select')
+            }
+        })
+    })
+</script>
+</body>
+</html>

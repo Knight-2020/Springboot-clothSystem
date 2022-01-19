@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/lib/layui-v2.5.5/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+</head>
+<style>
+    .layui-table-cell {
+        height: auto;
+    }
+</style>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button th:if="${#lists.contains(permissions, 'add')}"
+                        class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add">添加
+                </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="images">
+            {{#
+                let clothImages = d.clothImages.split(',')
+            }}
+            {{#
+                for (let i = 0;i < clothImages.length;i++) {
+            }}
+            <img src="/download?fileName={{clothImages[i]}}"/>
+            {{# } }}
+        </script>
+        <script type="text/html" id="currentTableBar">
+            <a th:if="${#lists.contains(permissions, 'delete')}"
+               class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="delete">删除</a>
+        </script>
+
+    </div>
+</div>
+<script th:src="@{/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script th:inline="javascript">
+    layui.use(['form', 'table'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            table = layui.table
+
+        table.render({
+            elem: '#currentTableId',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: [],
+            url: '/suit/page',
+            method: 'post',
+            contentType: 'application/json',
+            parseData: function (res) {
+                return {
+                    'code': 0,
+                    'count': res.total,
+                    'data': res.data
+                }
+            },
+            request: {
+                pageName: 'pageNumber',
+                limitName: 'pageSize'
+            },
+            cols: [
+                [
+                    { field: 'name', title: '名称', sort: true },
+                    { field: 'images', title: '图片', sort: true, templet: '#images' },
+                    { title: '操作', toolbar: '#currentTableBar', align: 'center' }
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        })
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }, where: {}
+            }, 'data')
+
+            return false
+        })
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                let index = layer.open({
+                    title: '添加',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/suit/addPage',
+                    end: function () {
+                        table.reload('currentTableId')
+                    }
+                })
+                $(window).on('resize', function () {
+                    layer.full(index)
+                })
+            }
+        })
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            let data = obj.data
+            if (obj.event === 'edit') {
+                let index = layer.open({
+                    title: '编辑',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: `/suit/editPage/${data.id}`,
+                    end: function () {
+                        table.reload('currentTableId')
+                    }
+                })
+                $(window).on('resize', function () {
+                    layer.full(index)
+                })
+                return false
+            } else if (obj.event === 'detail') {
+                let index = layer.open({
+                    title: '查看',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: `/suit/detailPage/${data.id}`,
+                })
+                $(window).on('resize', function () {
+                    layer.full(index)
+                })
+                return false
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    let data = obj.data
+                    $.ajax({
+                        url: `/suit/${data.id}`,
+                        type: 'delete'
+                    })
+                    layer.close(index)
+                    table.reload('currentTableId')
+                })
+                return false
+            }
+        })
+    })
+</script>
+</body>
+</html>

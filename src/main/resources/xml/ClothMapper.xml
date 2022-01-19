@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.clothSystem.mapper.ClothMapper">
+    <select id="findDtos" resultType="com.demo.clothSystem.dto.ClothDto">
+        select cloth.*,
+               type.name as typeName
+        from cloth
+                     inner join type on type.id = cloth.type_id
+                     inner join user on user.id = cloth.user_id and user.id = #{userId}
+    </select>
+</mapper>
+
+<!--sql映射文件：写sql语句，mybatis会执行这些sql-->
+<!--<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//
+DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+mybatis-3-mapper.dtd是指定约束文件
+作用：限制检查在当前文件中出现的标签，属性必须符合mybatis要求
+-->
+
+<!--mapper 当前文件的根标签
+namespace：命名空间，唯一的值-->
+
+<!--select标签表示查询操作
+id：你要执行的sql语法的唯一标识
+resultType：表示结果的类型，是sql语句执行之后得到的ResulSet,遍历这个ResultSet得到java对象的类型
+-->
